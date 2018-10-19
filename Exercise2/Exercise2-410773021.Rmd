@@ -17,6 +17,10 @@ iPeenData <- read_csv("https://raw.githubusercontent.com/tpemartin/course-107-1-
 ```
 
 ```{r ans1}
+library(stringr)
+str_sub(iPeenData$均消, start=13, end=-8)->a
+str_replace(a, ",", "")->b
+as.numeric(b)
 ```
 
 ## 2 
@@ -30,20 +34,26 @@ filmVotingData <- read_csv("https://raw.githubusercontent.com/tpemartin/course-1
 2.1 將`filmVotingData$Timestamp`透過`lubridate::mdy_hms()`轉成POSIXct Date/Time class。
 
 ```{r ans21}
+library(lubridate)
+as.character(filmVotingData$Timestamp)
+mdy_hms(filmVotingData$Timestamp)->y
 ```
 
 2.2 由於原始資料的時區為UTC，請透過`lubridate::with_tz()`將時區設為"Asia/Taipei"。
 
 ```{r ans22}
+with_tz(y, "Asia/Taipei")
 ```
 
 2.3 由Timestamp透過`lubridate::hour()`取出學生上網填表的小時值並存在新的變數`filmVotingData$hour`。  
 
 ```{r ans23}
+hour(y)-> "filmVotingData$hour"
 ```
 
 2.4 使用`table()`統計學生最活躍的填表時間。
 
 ```{r ans24}
+table(y)
 ```
 
