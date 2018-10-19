@@ -26,7 +26,7 @@ as.factor(bankdata$銀行)
 將年月改成西元年月
 ```{r ans12}
 library(lubridate)
-as.factor(bankdata$年月) -> y
+as.factor(bankdata$年月) -> bankdata$年月
 
 ```
 
