@@ -25,8 +25,8 @@ as.factor(bankdata$銀行)
 ### 1.2
 將年月改成西元年月
 ```{r ans12}
-as.factor(bankdata$年月) -> bankdata$年月
-date(bankdata$年月)  
+library(lubridate)
+as.factor(bankdata$年月) -> y
 
 ```
 
@@ -34,7 +34,8 @@ date(bankdata$年月)
 Google天災地圖會發佈天災時地資訊，如[潭美颱風(Typhoon Trami)](https://google.org/crisismap/google.com/2018-trami)，但它的時間是以UTC表示，如"2018/30/09 00:00 UTC",試透過`lubridate::with_tz()`將"2018/30/09 00:00 UTC"轉成台灣時間。(Hint: 台灣tzone可用`grep("Taipei",OlsonNames(),value=TRUE)`指令查得)
 
 ```{r ans2}
-
+ x <- ydm_hm("2018/30/09 00:00", tz="UTC")
+  with_tz(x, "Asia/Taipei")
 ```
 
 
