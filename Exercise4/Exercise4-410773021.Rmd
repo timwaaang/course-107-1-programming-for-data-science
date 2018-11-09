@@ -28,14 +28,13 @@ gsHW2ws$ans1 %>%　mean(na.rm=TRUE)
 使用`stringr::str_which()`來找出gsHW2ws中所有變數名稱包含的"ans"的欄位位置。
 ```{r ans12}
 library(stringr)
-str_which(names(gsHW2ws), "ans") -> AA
-
+str_which(names(gsHW2ws), "ans")
 ```
 
 ## 1.3
 使用`colMeans(x, na.rm=T)`一口氣計算五題的正確率（產生一個包含5題正確率的數值向量）。
 ```{r ans13}
-gsHW2ws[1:5] %>% colMeans(na.rm=T)
+gsHW2ws[1:5] %>% colMeans(na.rm=T) -> AA 
 ```
 
 ## 1.4
@@ -56,11 +55,15 @@ gsHW2ws$答對率*5+5 -> gsHW2ws$成績
 ## 1.6
 答對4題的人，最常錯的問題是那兩題？請找出其題目代碼。(`min()`與`max()`可找出極小與極大值，而`which()`可找出符合設定條件的元素位置)
 ```{r ans16}
+min(AA) -> m
+max(AA) -> M
+which(AA > m & AA < M)
 ```
 
 ## 1.7
 答對3題的人，有那幾題正確率低於5成？請找出其題目代碼。
 ```{r ans17}
+which(gsHW2ws[1:5] %>% rowSums(na.rm = T) == 3)
 ```
 
 
@@ -77,11 +80,23 @@ allBankData <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data
 **allBankData**的**年月**變數為民國年月，請將他改成西元年月日的date class, 「日」請設定成為1號，結果請存回**年月**變數。（hint: 善用`stringr::str_c()`及`lubridate::ymd()`丶`lubridate::years()`）
 
 ```{r ans21}
+library(lubridate)
+allBankData$年月 %>% 
+  str_c("1", . ,"/01") %>%
+  ymd %>%
+  { . + years(911) } -> allBankData$年月
 ```
 
 ## 2.2
 呈上題，allBankData只留下**銀行,年月,定存利率-三個月-固定,定存利率-一年期-固定**，接著將每個變數的class修改為合理的class。（**銀行**變數的合理class請慎選）
 ```{r ans22}
+cl<-locale(grouping_mark = ",")
+allBankData %>% 
+  mutate(
+    銀行 = as.factor(銀行), 
+    `定存利率-三個月-固定` = parse_number(`定存利率-三個月-固定`,locale=cl), 
+    `定存利率-一年期-固定` = parse_number(`定存利率-一年期-固定`,locale=cl)
+  ) -> allBankData
 ```
 
 
