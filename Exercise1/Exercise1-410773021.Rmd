@@ -19,15 +19,20 @@ bankdata <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/ma
 ### 1.1
 將**銀行**變數改成factor
 ```{r ans11}
-as.factor(bankdata$銀行)
+as.factor(bankdata$銀行) -> bankdata$銀行
 ```
 
 ### 1.2
 將年月改成西元年月
 ```{r ans12}
 library(lubridate)
-as.factor(bankdata$年月) -> bankdata$年月
-
+library(stringr)
+library(dplyr)
+as.character(bankdata$年月) -> bankdata$年月
+bankdata$年月 %>% 
+  str_c("1", ., "/01") %>% 
+  ymd %>% 
+  {.+years(911)} -> bankdata$年月
 ```
 
 ## 2
