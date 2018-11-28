@@ -17,13 +17,6 @@ Dplyr minicourse: https://bookdown.org/PoMingChen/Dplyr_minicourse/
 
 曾意儒，資料科學與R： https://yijutseng.github.io/DataScienceRBook/index.html
 
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,message=FALSE,error=FALSE,eval=FALSE)
-library(klippy)
-klippy()
-```
-
 ```{r}
 library(readr); library(dplyr); library(stringr); library(lubridate)
 ```
@@ -164,11 +157,16 @@ hwGradesSubsample <- hwGrades[c,]
 (hint: 使用`%in%`找出**classSurvey**屬於女性的學號)
 
 ```{r ans17}
+classSurvey$學號[isFemale] -> 女性學號
+hwGradesSubsample$女性 <- hwGradesSubsample$學號 %in% 女性學號
+hwGradesSubsample
 ```
 
 ## 1.8 性別與學業表現：男性
 依**hwGradesSubsample**的**平均成績**及**女性**變數來記算出男性的「平均」**平均成績**。(最後一行必需出現此平均值)
 ```{r ans18}
+hwGradesSubsample$平均成績[(hwGradesSubsample$女性==F)] %>%
+  mean
 ```
 
 > 小知識：資料中女性平均成績表現高於男性近2.39分（滿分10分）
@@ -176,6 +174,11 @@ hwGradesSubsample <- hwGrades[c,]
 ## 1.9 團隊活動與學業表現：女性
 請由**hwGradesSubsample**中計算女性「有參與」團隊活動的平均**平均成績**值。(最後一行必需出現此平均值) (hint: 可參考1.7來確認**hwGradesSubsample**有誰有參與團隊活動)
 ```{r ans19}
+classSurvey$學號[str_detect(subsample$課外活動, "團隊活動")] -> 有團隊的學號
+hwGradesSubsample$有團活 <- hwGradesSubsample$學號 %in% 有團隊的學號
+hwGradesSubsample$平均成績[(hwGradesSubsample$女性==T & hwGradesSubsample$有團活==T)] %>%
+  mean -> meanGradeFemaleWithAct
+meanGradeFemaleWithAct
 ```
 
 > 小知識：資料中女性「沒有參與」團隊活動的成績表現平均高於「有參與」的女性約2.14分；而這差距在男生中只有約1.74分。
@@ -189,17 +192,24 @@ hwSubmit <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/ma
 ## 2.1 class檢查
 請將**hwSubmit**的所有變數調整成正確的class，其中**Timestamp**為UTC時區，請將它轉成台灣Asia/Taipei時區。（最後一行請打hwSubmit, 程式將檢查裡面所有變數的class是否正確。）
 ```{r ans21}
+ymd_hms(hwSubmit$Timestamp, tz="Asia/Taipei") -> hwSubmit$Timestamp
+as.character(hwSubmit$學號) -> hwSubmit$學號
+hwSubmit
 ```
 
 ## 2.2 交作業時間: Exercise3
 取出**hwSubmit**中**作業代碼**為Exercise3的子樣本，稱它為**hwSubmit3**。Exercise3的截止時日是台灣時間2018-11-06 00:00:00，請計算每個人該作業離截止時日還有多少小時。（請於**hwSubmit3**中創一個新變數**截止時差**存入每個人的時差小時值，程式最後一行請打hwSubmit3，程式將檢查裡面的**截止時差**是否正確。）(hint: `difftime()`)
 ```{r ans22}
+hwSubmit[1:49,1:4] -> hwSubmit3
+difftime("2018-11-06 00:00:00", hwSubmit3$Timestamp, units = "hours") -> hwSubmit3$截止時差
+hwSubmit3
 ```
 
 ## 2.3 性別差異
 **hwSubmit3**中, 女性「平均」截止時差比男性多多少小時呢？（最後一行答案必須女生減去男性的值。）
 
 ```{r ans23}
+mean(hwSubmit3$截止時差[hwSubmit3$女性==T])-mean(hwSubmit3$截止時差[hwSubmit3$女性==F])
 ```
 
 > 小知識：第一次作業男性平均早女性7.5小時交，第二次作業早35.5小時。
