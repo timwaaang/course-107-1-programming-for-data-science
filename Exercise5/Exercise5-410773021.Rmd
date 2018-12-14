@@ -34,7 +34,7 @@ transcriptData <- read_csv("https://raw.githubusercontent.com/tpemartin/github-d
 取出學號edfeQ7fb8的子樣本：
 
 ```{r ans11}
-transcriptData$學號[edfeQ7fb8] 
+transcriptData[transcriptData$學號=="edfeQ7fb8",] -> subsample
 ```
 
 ## 1.2 總學分數
@@ -48,10 +48,10 @@ subsample$學期成績 >= 60 -> subsample$及格 # 1
 
 請用dplyr函數改寫以上三個步驟：使用`mutate()`完成#1，接著用`summarise()`完成#2及#3
 ```{r ans12}
-transcriptData %>% mutate(及格=學期成績>=60) -> transcriptData
-transcriptData %>% select(學分數) %>% summarise(
+subsample %>% mutate(及格=學期成績>=60) -> subsample
+subsample %>% summarise(
   總修習學分數=sum(學分數),
-  總實得學分數=sum(學分數[transcriptData$及格])
+  總實得學分數=sum(學分數[及格])
 ) 
 ```
 
@@ -62,6 +62,12 @@ transcriptData %>% select(學分數) %>% summarise(
 重寫上一題，但讓summarise輸出「學號」、「總修習學分數」、「總實得學分數」三項值。
 
 ```{r ans13}
+subsample %>% mutate(及格=學期成績>=60) -> subsample
+subsample %>% summarise(
+  學號=學號[1],
+  總修習學分數=sum(學分數),
+  總實得學分數=sum(學分數[及格])
+) 
 ```
 
 ## 1.4 學分數計算函數
@@ -69,6 +75,16 @@ transcriptData %>% select(學分數) %>% summarise(
 設計一個學分數計算函數稱之為totalCredits，當我們給它學號字串，它便會回傳給我們「學號」、「總修習學分數」、「總實得學分數」三項值。以上題為例,`totalCredits("edfeQ7fb8")`會回傳上題答案值。
 
 ```{r ans14}
+totalCredits <- function(x){
+  transcriptData[transcriptData$學號== x,] %>% 
+    mutate(及格=學期成績>=60) %>% 
+    summarise(
+  學號=x,
+  總修習學分數=sum(學分數),
+  總實得學分數=sum(學分數[及格])) -> result
+  return(result)
+}
+totalCredits("edfeQ7fb8")
 ```
 
 
@@ -76,6 +92,7 @@ transcriptData %>% select(學分數) %>% summarise(
 
 學號的第5-6碼為此學生系別, 請在transcriptData新增**系別**欄位。
 ```{r ans15}
+str_sub(transcriptData$學號,5,6) -> transcriptData$系別
 ```
 
 
@@ -84,6 +101,7 @@ transcriptData %>% select(學分數) %>% summarise(
 找出此樣本中100學年第1學期學生所選通識科目有那幾種。最後一行程式請存在**通識科目總表**物件(class為character)裡，裡頭是「不重覆」的科目名稱。
 （hint: 由於每個科目可以有很多學生修，取出每位學生修的通識會有不少重覆，此時可以用`unique()`函數去掉重複的部份即是完整的科目種類。）
 ```{r ans16}
+
 ```
 
 ## 1.7 課堂學生系別背景多樣化
