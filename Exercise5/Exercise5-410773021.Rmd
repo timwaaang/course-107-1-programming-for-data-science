@@ -101,7 +101,8 @@ str_sub(transcriptData$學號,5,6) -> transcriptData$系別
 找出此樣本中100學年第1學期學生所選通識科目有那幾種。最後一行程式請存在**通識科目總表**物件(class為character)裡，裡頭是「不重覆」的科目名稱。
 （hint: 由於每個科目可以有很多學生修，取出每位學生修的通識會有不少重覆，此時可以用`unique()`函數去掉重複的部份即是完整的科目種類。）
 ```{r ans16}
-
+transcriptData[transcriptData$`必選修類別（必∕選∕通）`=="通",] ->sample
+unique(sample$科目名稱) -> 通識科目總表
 ```
 
 ## 1.7 課堂學生系別背景多樣化
@@ -118,6 +119,10 @@ str_sub(transcriptData$學號,5,6) -> transcriptData$系別
   
   
 ```{r ans17}
+shannon<-function(x){
+  p <- c(table(x)/length(x))
+  -sum(p*log(p))
+}
 ```
 
 
@@ -125,6 +130,8 @@ str_sub(transcriptData$學號,5,6) -> transcriptData$系別
 
 請選出104學年第1學期有修通識科目ZT13的學生系別，再透過先前創造的`shannon()`來計算該課程的學生系別背景多樣性指標值（最後一行請讓螢幕出現此值）。
 ```{r ans18}
+transcriptData[transcriptData$科目名稱=="ZT13",] -> ZT13sample
+shannon(ZT13sample$系別)
 ```
 
 
