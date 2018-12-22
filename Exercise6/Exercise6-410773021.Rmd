@@ -87,7 +87,7 @@ na2zero(x)=3
 
 ```{r ans13}
 na2zero <- function(x){
-  
+  ifelse(is.na(x) == T, 0, x)
 }
 ```
 
@@ -95,6 +95,10 @@ na2zero <- function(x){
 例用na2zero函數，透過mutate將hwGrades三次作業NA成績均轉成0。(結果記得回存hwGrades) (對程式能力掌握好的同學我建議試著用`mutate_if()`來對所有numeric class變數(三次作業成績都是這個class)進行na2zero轉換。)
 
 ```{r ans14}
+hwGrades %>% mutate_at( 
+  vars(hw1, hw2, Exercise3), 
+  funs(na2zero)
+) -> hwGrades
 ```
 
 ## 1.5 資料整併
@@ -119,17 +123,25 @@ band_members %>%
 請以hwGrades為「左手邊」data frame把classSurvey的資訊合併進來。（結果請回存hwGrades）
 
 ```{r ans15}
+hwGrades %>% 
+  left_join(classSurvey, by = c("學號")) -> hwGrades
 ```
 
 ## 1.6 個人作業平均成績
 使用整併完的hwGrades透過`mutate()`來計算每個人的**作業平均成績**。（結果請回存hwGrades）
 
 ```{r ans16}
+hwGrades %>% mutate(
+  作業平均成績=rowMeans(hwGrades[2:4])
+) -> hwGrades
 ```
 
 ## 1.7 性別與學業表現：男性
 延續上題的hwGrades，請使用`group_by()`及`summarise()`來計算男/女性的**平均作業平均成績**。(結果還會出現性別NA組的平均)
 
 ```{r ans17}
+hwGrades %>% group_by(性別) %>% summarise(
+  mean(作業平均成績)
+)
 ```
 
