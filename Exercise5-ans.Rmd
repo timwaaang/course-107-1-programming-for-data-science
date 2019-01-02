@@ -93,6 +93,7 @@ totalCredits<-function(x){
       總實得學分數=sum(學分數[及格])
     )  
 }
+
 ```
 
 
