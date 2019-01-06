@@ -47,10 +47,8 @@ transcriptData %>% group_by(學號, 學年, 學系, 學屆) %>% summarise(
 學屆（代表入學年）、學系相同的學生為同班同學。請由平均成績計算各自在班上每學年的**學年PR**值（使用`percent_rank()`再乘上100，即代表在100人中贏過的人數）也存進gradeEachYear裡。（最後一行請打gradeEachYear。）
 
 ```{r ans13}
-gradeEachYear %>% summarise(
-  學年PR=percent_rank(學年平均成績)
-)
-
+percent_rank(gradeEachYear$學年平均成績) -> gradeEachYear$學年PR
+gradeEachYear
 ```
 
 
@@ -58,6 +56,8 @@ gradeEachYear %>% summarise(
 請自transcriptData留下有四年或以上且有完整8學期或以上的學生之成績資料，接著只留下他們前8個學期成績，請稱此篩選後的資料為filteredTranscriptData。接著用filteredTranscriptData來計算這些學生的四年平均總成績並存在新創的grade4Years的data frame中的**學屆平均成績**變數中；此資料請保留學號、學系、學屆，且一個學號只有「一筆」資料。接著再計算各自在班上的學屆PR，且亦存在grade4Years新創的**學屆PR**變數中。（最後一行請打grade4Years供改題檢查上述兩變數的正確性。）
 
 ```{r ans14}
+transcriptData %>% group_by(學號)
+  # -> filteredTranscriptData 
 ```
 
 ### 1.5 通識與PR
