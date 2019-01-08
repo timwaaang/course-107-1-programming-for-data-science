@@ -40,6 +40,8 @@ unique(transcriptData$學號) %>% length
 transcriptData %>% group_by(學號, 學年, 學系, 學屆) %>% summarise(
   學年平均成績=mean(學期成績)
 ) -> gradeEachYear
+gradeEachYear
+
 ```
 
 
@@ -48,7 +50,7 @@ transcriptData %>% group_by(學號, 學年, 學系, 學屆) %>% summarise(
 
 ```{r ans13}
 gradeEachYear %>% group_by(學系,學屆,學年) %>% mutate(
-  學年PR=percent_rank(學年平均成績)
+  學年PR=percent_rank(學年平均成績)*100
 ) -> gradeEachYear
 gradeEachYear
 ```
