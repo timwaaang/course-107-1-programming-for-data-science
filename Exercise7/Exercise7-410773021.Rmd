@@ -47,7 +47,9 @@ transcriptData %>% group_by(學號, 學年, 學系, 學屆) %>% summarise(
 學屆（代表入學年）、學系相同的學生為同班同學。請由平均成績計算各自在班上每學年的**學年PR**值（使用`percent_rank()`再乘上100，即代表在100人中贏過的人數）也存進gradeEachYear裡。（最後一行請打gradeEachYear。）
 
 ```{r ans13}
-percent_rank(gradeEachYear$學年平均成績) -> gradeEachYear$學年PR
+gradeEachYear %>% group_by(學系,學屆,學年) %>% mutate(
+  學年PR=percent_rank(學年平均成績)
+) -> gradeEachYear
 gradeEachYear
 ```
 
@@ -56,14 +58,39 @@ gradeEachYear
 請自transcriptData留下有四年或以上且有完整8學期或以上的學生之成績資料，接著只留下他們前8個學期成績，請稱此篩選後的資料為filteredTranscriptData。接著用filteredTranscriptData來計算這些學生的四年平均總成績並存在新創的grade4Years的data frame中的**學屆平均成績**變數中；此資料請保留學號、學系、學屆，且一個學號只有「一筆」資料。接著再計算各自在班上的學屆PR，且亦存在grade4Years新創的**學屆PR**變數中。（最後一行請打grade4Years供改題檢查上述兩變數的正確性。）
 
 ```{r ans14}
-transcriptData %>% group_by(學號)
-  # -> filteredTranscriptData 
-```
+semesterNumber<-function(xx){
+  xx %>% as.factor ->xx
+  levels(xx) <- 1:length(levels(xx))
+  as.integer(xx)
+} 
+
+transcriptData %>%
+  mutate(
+    學年學期=str_c(學年,"-",學期) ###（***）
+  ) %>%
+  group_by(學號) %>%
+  mutate(
+    第幾學期=semesterNumber(學年學期)
+  ) -> transcriptDataWithSemesterCounts 
+transcriptDataWithSemesterCounts %>% group_by(學號) %>% filter(
+  max(第幾學期)>=8,
+  between(第幾學期, 1, 8)
+) -> filteredTranscriptData
+filteredTranscriptData %>% group_by(學號,學系,學屆) %>% summarise(
+  學屆平均成績=sum(學期成績*學分數)/sum(學分數)
+)->grade4Years
+grade4Years %>% group_by(學系,學屆) %>% mutate(
+  學屆PR=percent_rank(學屆平均成績)
+) -> grade4Years
+grade4Years
+``` 
+
 
 ### 1.5 通識與PR
 學校近期限制通識每班平均成績在75-85間，原因之一是有不少通識涼課被拿來衝高成績用，但它會影響班排嗎？請計算不含通識成績的學屆PR並存在前一題grade4Years的**學屆PR不含通識**裡。
 
 ```{r ans15}
+
 ```
 
 ### 1.6 各系PR敏感度
